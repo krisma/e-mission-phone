@@ -9,11 +9,16 @@
 
 		<button class="button button-icon icon ion-ios-arrow-thin-right" ng-click="nextDay()">
 		</button>
-        <button class="button button-icon icon ion-refresh" ng-click="refresh()">
-        </button>
+        <!-- Refresh button removed. Pull to refresh -->
+<!--         <button class="button button-icon icon ion-refresh" ng-click="refresh()">
+        </button> -->
 		</div>
 	</div> 	
 	<ion-content class="has-subheader" style="background-color: #eeeeee;">
+        <ion-refresher 
+        pulling-text="Pull to refresh" 
+        on-refresh="refresh()">
+        </ion-refresher>
 		<ion-list>
         <!-- 
         This needs to be collection-repeat instead of ng-repeat on android.
@@ -26,25 +31,27 @@
         MUST test on android first to make sure that the scrolling works.
         -->
 		<div collection-repeat="tripgj in data.currDayTripWrappers">
-			<div class="list card" style="margin-top: 20px; margin-bottom: 20px;">
-			 <ion-item style="padding: 10px;" class="list-item" href="#/root/main/diary/{{tripgj.data.id}}">
-                {{ if}}
+			
+			 <ion-item style="height: {{ getEarlierOrLater(tripgj.data.properties.start_ts, tripgj.data.id) == ''? '275px':'300px' }} ;" class="list-item" href="#/root/main/diary/{{tripgj.data.id}}">
+                <div class="list card" style="padding: 10px;">
                 <i class="icon ion-ios-star" style="font-size: 24px; position: absolute; right: 5px; top: 5px; color: {{ starColor(tripgj.common_count) }};"></i>
-                <div class="row" style="">
+                <div class="row" style="padding-top: 1em;">
 
                     <div class="col-30">
-                        <div style="font-size: 13px; padding-top: 5px; padding-bottom: 5px;">{{getFormattedTime(tripgj.data.properties.start_ts)}}</div><div style="font-size: 13px; padding-top: 5px; padding-bottom: 5px;">{{getFormattedTime(tripgj.data.properties.end_ts)}}
+                        <div style="font-size: 0.8em; padding-top: 5px; padding-bottom: 5px;">{{getFormattedTime(tripgj.data.properties.start_ts)}}</div>
+                        <div style="font-size: 15px; width: 0; color: #999; display: {{ getEarlierOrLater(tripgj.data.properties.start_ts, tripgj.data.id) == ''? 'none':'block';  }}"><img src="{{ getEarlierOrLater(tripgj.data.properties.start_ts, tripgj.data.id)[0] == '-'? 'img/minus.gif':'img/plus.gif';  }}" style="width: 15px; margin-right: 8px;">{{parseEarlierOrLater(getEarlierOrLater(tripgj.data.properties.start_ts, tripgj.data.id))}}</div>
+                        <div style="font-size: 0.8em; padding-top: 5px; padding-bottom: 5px;">{{getFormattedTime(tripgj.data.properties.end_ts)}}
                         </div>
                     </div>
 
                     <div class="col-70">
 
-                        <div class="item item-icon-left" href="#" style="font-size: 13px; padding-top: 5px; padding-bottom: 5px;padding-left: 25px; margin-top: 0; margin-bottom: 0;">
+                        <div class="item item-icon-left" href="#" style="font-size: 0.8em; padding-top: 5px; padding-bottom: 5px;padding-left: 25px; margin-top: 0; margin-bottom: {{getEarlierOrLater(tripgj.data.properties.start_ts, tripgj.data.id) == ''? '0':'20px'}};">
                         <i class="icon ion-ios-location" style="font-size: 16px; left: 0; color: #72b026;"></i>
                     {{tripgj.start_place.properties.displayName.split(',')[0]}}
 
                         </div>
-                        <div class="item item-icon-left" href="#" style="font-size: 13px; padding-top: 5px; padding-bottom: 5px;padding-left: 25px; margin-top: 0; margin-bottom: 0;">
+                        <div class="item item-icon-left" href="#" style="font-size: 0.8em; padding-top: 5px; padding-bottom: 5px;padding-left: 25px; margin-top: 0; margin-bottom: 0;">
                         <i class="icon ion-ios-location" style="font-size: 16px; left: 0; color: #d63e2a;"></i>
                     {{tripgj.end_place.properties.displayName.split(',')[0]}}
                         </div>
@@ -54,61 +61,41 @@
                 <div style="height: 10px;"></div>
 
 
-            	<div class="row">
-				  <div class="col-70">
+            	<div class="row" style="">
+				  <div class="col-70" style="">
 				    <leaflet geojson="tripgj" id="$index" defaults="defaults"></leaflet>
 				  </div>
-				  <div class="col-30" style="padding: 10px;">
-				  	<p style="font-size: 15px; color: #cccccc">Distance</p>
-				    <p style="font-size: 20px;">{{getFormattedDistance(tripgj.data.properties.distance)}} km</p>
+				  <div class="col-30" style="padding: 0 10px;">
+				  	<div>
+                    <p style="color: #ccc; font-size: 0.8em">Distance</p>
+				    <p style="font-size: 0.8em">{{getFormattedDistance(tripgj.data.properties.distance)}} km</p>
 				    <div style="height: 10px;"></div>
-				    <p style="font-size: 15px; color: #cccccc">Time</p>
-				    <p style="font-size: 20px;">{{getFormattedTimeRange(tripgj.data.properties.start_ts,
+				    </div>
+                    <div>
+                    <p style="color: #ccc; font-size: 0.8em;">Duration</p>
+				    <p style="font-size: 0.8em; float: left; margin-right: 10px;">{{getFormattedTimeRange(tripgj.data.properties.start_ts,
                            tripgj.data.properties.end_ts)}}</p>
-                    <div style="height: 10px;"></div>
+                    <div style="float: right;">
+                     <i class="{{ getArrowClass(getLongerOrShorter(tripgj.data, tripgj.data.id)[0]) }}" style="font-size: 14px; color: {{arrowColor(getLongerOrShorter(tripgj.data, tripgj.data.id)[0])}};"></i>
+                        <a style="font-size: 14px; color: {{arrowColor(getLongerOrShorter(tripgj.data, tripgj.data.id)[0])}};">{{ getLongerOrShorter(tripgj.data, tripgj.data.id)[1] }}</a>
+                     </div>
+                    </div>
+                    <div style="height: 30px;"></div>
                     
                 
                     
-                    <i class="{{mode}}" ng-repeat="mode in allModes(tripgj) track by $index" style="margin-left: 5px; margin-right: 5px; font-size: 20px;">
-                    <!-- 	<i class="{{mode}}" style="font-size: 24px;"></i> -->
-                    </i>
-                    
+
+                <i class="{{mode}}" ng-repeat="mode in getPercentages(tripgj)[0]" style="font-size: 0.8em; margin-left: 0.3em; margin-right: 1em;" ng-style="setColor(mode)"></i>
+                <br>
+                <a ng-repeat="percentage in getPercentages(tripgj)[1]" style="font-size: 0.6em; margin-right: 0.4em;">{{percentage}}%</a>
+                        
 
 				  </div>
 				</div>
-            	
-            		<!-- <div class="item item-icon-left" href="#" style="font-size: 13px; padding-left: 44px; padding-top: 15px; padding-bottom: 6px;">
-    					<i class="icon ion-ios-location" style="font-size: 16px; padding-top: 15px; padding-bottom: 6px; color: #cccccc;"></i>
-				    	{{tripgj.start_place.properties.displayName}}
-				  	</div>
-            		<div class="item item-icon-left" href="#" style="font-size: 13px; padding-left: 44px; padding-top: 6px; padding-bottom: 6px;">
-    					<i class="icon ion-ios-arrow-thin-down" style="font-size: 16px; color: #aaaaaa; padding-top: 6px; padding-bottom: 6px;"></i>
-    					Travelled {{getFormattedDistance(tripgj.data.properties.distance)}} km in 
-				    	{{getFormattedTimeRange(tripgj.data.properties.start_ts,
-                           tripgj.data.properties.end_ts)}}
-				  	</div>
-             		<div class="item item-icon-left" href="#" style="font-size: 13px; padding-left: 44px; padding-top: 6px; padding-bottom: 10px;">
-    					<i class="icon ion-ios-location" style="font-size: 16px; padding-top: 6px; padding-bottom: 10px; color: #cccccc;"></i>
-				    	{{tripgj.end_place.properties.displayName}}
-				  	</div>    
-             		<div class="item item-icon-left item-stable" href="#" ng-click="toggleGroup(tripgj)"
-                    ng-class="{active: isGroupShown(tripgj)}" style="font-size: 10px; padding-left: 44px; padding-top: 1px; padding-bottom: 1px; background-color: #ffffff;">
-    					<i class="icon" ng-class="isGroupShown(tripgj) ? 'ion-arrow-up-b' : 'ion-arrow-down-b'" style="font-size: 13px; padding-top: 1px; padding-bottom: 1px; color: #cccccc;"></i>
-				    	{{isGroupShown(tripgj) ? 'Hide the map' : 'Show the map'}}
-				  	</div>   -->
-            </ion-item>
-<!-- 	        <ion-item class="item-accordion" ng-show="isGroupShown(tripgj)">
-			    
-			    <div class="row" ng-repeat="section in tripgj.sections">
-                      <div class="col">{{getFormattedTime(section.properties.start_ts)}}</div>
-                      <div class="col">{{getFormattedTime(section.properties.end_ts)}}</div>
-                      <div class="col">{{getFormattedTimeRange(section.properties.end_ts, section.properties.start_ts)}}</div>
-                      <div class="col">{{getFormattedDistance(section.properties.distance)}}</div>
-                      <div class="col">{{getKmph(section)}}</div>
-                      <div class="col">{{getHumanReadable(section.properties.sensed_mode)}}</div>
-                 </div>
-	        </ion-item> -->
             </div>
+            </ion-item>
+
+            
         </div>
 		</ion-list>
 	</ion-content>
