@@ -1,27 +1,5 @@
-<ion-view title="Common Patterns">
-<ion-nav-title class="dark-color"></ion-nav-title>
-      <ion-content class="has-header" overflow-scroll="true" padding="true">
-      <!--
-      <ion-refresher
-        pulling-text="Pull to refresh..."
-        on-refresh="refreshMap()">
-      </ion-refresher>
-      -->
-      <div style="" class="button-bar">
-        <button class="button button-stable button-block icon ion-refresh"
-          ng-click="refreshMap()">Refresh</button>
-      </div>
-
-      <leaflet geojson="mapCtrl.geojson"
-               id="common"
-               defaults="mapCtrl.defaults"
-               height="200px" width="100%">
-      </leaflet>
-
-      <ion-list>
-        <div collection-repeat="trip in mapCtrl.trips">
-          <ion-item class="common-map-item" href="#/root/main/common/map/{{trip._id.$oid}}">
-            <div class="common-map-card">
+<ion-view style="" title="Common Patterns">
+    <ion-content>
             <div class="row">
             <div class="col-80" style="padding: 5% 0 3% 5%;">
             <div class="common-map-item-location"><i class="icon ion-ios-location" style="font-size: 1em; left: 0; color: #33e0bb; margin-right: 8px;"></i>{{trip.start_displayName.split(',')[0]}}</div>
@@ -32,10 +10,6 @@
               <div style="font-size: 0.7em;">{{getFormattedDuration(trip.common_duration)}}</div>
             </div>
             </div>
-            </div>
-          </ion-item>
-        </div>
-    </ion-list>
-
+            <nvd3 options="options" data="data" config="{refreshDataOnly: false}"></nvd3>
     </ion-content>
 </ion-view>
