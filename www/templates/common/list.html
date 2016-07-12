@@ -18,6 +18,7 @@
         <!-- <ion-item class="common-list-item" href="#/root/main/common/places/{{place._id.$oid}}"> -->
         <ion-item class="common-list-item">
           <div class="common-list-card">
+          <leaflet geojson="place" defaults="defaults" ng-class="leafletClass()"></leaflet>   
           <div class="common-list-item-location">{{place.displayName}}</div>
           <!-- <div class="row">{{place.location.coordinates}}</div> -->
           <div class="common-list-item-times">{{place.places.length}} {{ place.places.length > 1? 'visits' : 'visit' }}</div>

@@ -7,4 +7,18 @@ angular.module('emission.main.common.list',['ui-leaflet',
                                     CommonGraph) {
   console.log("controller CommonListCtrl called");
   $scope.places = CommonGraph.data.graph.common_places;
+  $scooe.geojson = CommonGraph.data.geojson;
+
+  angular.extend($scope, {
+      defaults: {
+          zoomControl: false,
+          dragging: false,
+          zoomAnimation: true,
+          touchZoom: false,
+          scrollWheelZoom: false,
+          doubleClickZoom: false,
+          boxZoom: false,
+      }
+  });
+
 });

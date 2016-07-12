@@ -3,6 +3,7 @@ angular.module('emission.main.common',['ui-leaflet',
                                       'emission.main.common.map',
                                       'emission.main.common.list',
                                       'emission.main.common.detail',
+                                      'emission.main.common.trip-detail',
                                       'emission.main.common.services',
                                       'emission.services'])
 .config(function($stateProvider, $ionicConfigProvider, $urlRouterProvider) {
@@ -14,6 +15,16 @@ angular.module('emission.main.common',['ui-leaflet',
       'menuContent': {
         templateUrl: 'templates/common/map.html',
         controller: 'CommonMapCtrl'
+      }
+    }
+  })
+
+  .state('root.main.common.trip-detail', {
+    url: '/map/:tripId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/common/trip-detail.html',
+        controller: 'CommonTripDetailCtrl'
       }
     }
   })

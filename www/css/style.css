@@ -327,10 +327,14 @@ button.button.back-button.buttons.button-clear.header-item {
         line-height: 16px;
 }
 .side-menu-item {
-  padding: 5% 10%;
+  width: 70px;
+    display: flex;           /* establish flex container */
+    flex-direction: column;  /* make main axis vertical */
+    justify-content: center; /* center items vertically, in this case */
+    align-items: center;     /* center items horizontally, in this case */
 }
-.common-list-item {
-  padding: 5% 10% 3% 10%;
+.common-list-card {
+  margin: 3% 6% 0 6%;
 }
 .common-list-item-location {
   font-size: 1em;
@@ -346,7 +350,10 @@ button.button.back-button.buttons.button-clear.header-item {
   padding: 0 !important;
 }
 .common-map-item-location {
-   font-size: 0.8em;
+  font-size: 0.8em;
   font-weight: 300;
   color: #000; 
+}
+.common-map-card {
+  height: auto;
 }
